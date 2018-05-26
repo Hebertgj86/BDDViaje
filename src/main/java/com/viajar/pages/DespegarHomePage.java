@@ -27,13 +27,6 @@ public class DespegarHomePage extends PageObject {
     String startDate = "1";
     String endDate= "29";*/
 
-    String yyyy_ini = "2018";
-    String mm_ini = "09";
-    Integer dd_ini = 01;
-
-    String yyyy_fin = "2018";
-    String mm_fin = "09";
-    Integer dd_fin = 28;
 
     Integer nro_adults = 2;
     Integer nro_children = 0;
@@ -79,21 +72,10 @@ public class DespegarHomePage extends PageObject {
     private WebElementFacade selectDate;
 
     @FindBy(xpath = "/html/body/div[4]/div/div[4]/div")
-    /*@FindBy(xpath = "/html/body/div[4]/div/div[4]/div[1]")
-            /html/body/div[4]/div/div[4]/div[2
-            /html/body/div[4]/div/div[4]/div[4]
-            /html/body/div[4]/div/div[4]/div[5]
-            /html/body/div[4]/div/div[4]/div[6]*/
     private List<WebElementFacade> listMonth;
 
     @FindBy(xpath = "//*[@class=\'_dpmg2--controls-next\']")
     private WebElementFacade nextButton;
-
-
-
-    @FindBy(xpath = "//*[@id=\'searchbox-sbox-all-boxes\']/div/div/div/div[3]/div[2]/div[1]/div[2]/div[1]/div[2]/div[2]/div[4]/input")
-    private WebElementFacade prueba2;
-
 
 
     @FindBy(xpath = "//input[@class='input-tag -sbox-3-no-radius-left sbox-bind-disable-end-date sbox-bind-value-end-date sbox-bind-reference-flight-end-date-input']")
@@ -125,7 +107,14 @@ public class DespegarHomePage extends PageObject {
     public void waitUntilMainElementsAppears() {getDriver().manage().window().maximize();}
 
     public void fillSearchFields(ExamplesTable searchDataTable){
+
+
+
         Map<String, String> searchData = searchDataTable.getRow(0);
+        String yyyy_ini = searchData.get("yyyyini");
+        String mm_ini = searchData.get("mmini");
+        String dd_ini = searchData.get("ddini");
+
         clearFields();
         originField.waitUntilVisible().sendKeys(searchData.get("from"));
         waitABit(1000);
@@ -134,11 +123,11 @@ public class DespegarHomePage extends PageObject {
         waitABit(1000);
         destinyField.sendKeys(Keys.ENTER);
         fillStartDateFields(yyyy_ini,mm_ini,dd_ini);
-        fillEndDateFields(yyyy_fin, mm_fin, dd_fin , mm_ini);
+        fillEndDateFields(searchData.get("yyyyfin"),searchData.get("mmfin"), searchData.get("ddfin"), searchData.get("mmini"));
         numberPersons(nro_adults, nro_children);
     }
 
-    public void fillStartDateFields (String yyyy_ini, String mm_ini, Integer dd_ini){
+    public void fillStartDateFields (String yyyy_ini, String mm_ini, String dd_ini){
         if (mes >=0 || mes<=8 ) {
             mesCaracter = "0" + Integer.toString(mes+1);
         }else {
@@ -162,7 +151,7 @@ public class DespegarHomePage extends PageObject {
         $(path).click();
     }
 
-    public void fillEndDateFields(String yyyy_fin, String mm_fin, Integer dd_fin , String mm_ini) {
+    public void fillEndDateFields(String yyyy_fin, String mm_fin, String dd_fin , String mm_ini) {
         String path = "/html/body/div/div/div/div[@data-month='" + yyyy_fin + "-" + mm_fin + "']/div/span[contains(text(),'" + dd_fin + "')]";
         String xpath ="/html/body/div/div/div/div[@data-month='" + yyyy_fin + "-" + mm_fin + "']/div/span[@class='_dpmg2--date _dpmg2--available _dpmg2--nights-tooltip _dpmg2--days--modifier'][" + dd_fin + "]";
 
@@ -295,15 +284,6 @@ public class DespegarHomePage extends PageObject {
         MatcherAssert.assertThat("User can't continue with the same city on origin and destiny fields",sameCityText.equals("Ingresa un destino"));
     }
 
-    public void verifyOnlyDepartureDate(){
-        String sameCityText = errorTooltip.getText();
-        MatcherAssert.assertThat("User can't continue with the same city on origin and destiny fields",sameCityText.equals("Ingresa una fecha de partida"));
-    }
-
-    public void verifyOnlyreturnDate(){
-        String sameCityText = errorTooltip.getText();
-        MatcherAssert.assertThat("User can't continue with the same city on origin and destiny fields",sameCityText.equals("Ingresa una fecha de regreso"));
-    }
 
     public void verifySameCity(){
         String sameCityText = errorTooltipdestination.getText();
@@ -319,37 +299,4 @@ public class DespegarHomePage extends PageObject {
         originField.clear();
         destinyField.clear();
     }
-
-   /*public void fillDateFields (String annomes, String startDate, String endDate){
-        boolean fligh = true;
-        //WebElementFacade month = null;
-        String xpathStart = "/html/body/div[4]/div/div[4]/div[5]/div[4]/span["+ startDate +"]";
-        String xpathEnd = "/html/body/div[4]/div/div[4]/div[5]/div[4]/span["+ endDate +"]";
-
-        departureDateField.click();
-
-        while (fligh){
-
-            for (WebElementFacade elemento: listMonth){
-                if (elemento.getAttribute("data-month").equalsIgnoreCase(annomes) & (elemento.getAttribute("class").contains("active"))){
-                    //month=elemento;
-                    fligh=false;
-                    break;
-                }
-            }
-
-            if (fligh){
-                selectDate.click();
-                selectDate.click();
-                selectDate.click();
-
-            }
-        }
-
-        prueba2.click();
-        $(xpathStart).click();
-        prueba2.click();
-        $(xpathEnd).click();
-    }*/
-
 }
